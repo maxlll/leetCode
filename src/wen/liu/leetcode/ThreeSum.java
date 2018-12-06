@@ -1,5 +1,6 @@
 package wen.liu.leetcode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class ThreeSum {
 	public static void main(String[] args) {
 		try{
-			int[] s={};
+			int[] s={-1,0,1,2,-1,-4};
 			System.out.println(threeSum(s));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -21,8 +22,64 @@ public class ThreeSum {
 	}
 	
 	public static List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
+		List<List<Integer>> list = new ArrayList<List<Integer>>();
+        if(nums==null || nums.length<3)
+        	return list;
         
-		return null;
+        Arrays.sort(nums);
+        int len = nums.length;
+
+        int prev1=1;
+        for(int i=0;i<len;i++){
+        	int num1 = nums[i];
+        	if(num1 == prev1) continue;
+        	if(num1 > 0) break;
+        	
+        	int prev3 = -1;
+        	for(int j=nums.length-1;j>i+1;j--){
+        		int num3 = nums[j];
+        		if(num3 < 0){
+        			break;
+        		}else if(num3==0){
+        			if(num1==0) addInt(list, num1, 0, num3);
+        			break;
+        		}else if(num3==prev3 || num1==0){
+    				continue;
+        		}
+        		
+        		int sum = num1+num3;
+        		int num2 = -sum;
+        		
+        		if(num2<num1)
+        			continue;
+        		else if(num2>num3)
+        			break;
+        		
+    	       int low = i+1;
+    	       int high = j-1;
+    	       while(low<=high){
+    	    	   int index = (low+high)>>>1;
+        		   if(nums[index] < num2){
+        			   low = index+1;
+        		   }else if(nums[index]>num2){
+        			   high = index-1;
+        		   }else{
+        			   addInt(list, num1, num2, num3);
+        			   break;
+        		   }
+    	       }
+    	       prev3 = num3;
+        	}
+        	prev1 = num1;
+        }
+		return list;
     }
+	
+	private static void addInt(List<List<Integer>> list, int num1, int num2, int num3){
+		List<Integer> sub = new ArrayList<Integer>();
+		sub.add(num1);
+		sub.add(num2);
+		sub.add(num3);
+		list.add(sub);
+	}
 }
